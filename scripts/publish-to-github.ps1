@@ -14,7 +14,7 @@
 
 param(
     [string]$RepoName = "adobe-rtcdp-healthcare-architecture",
-    [string]$Description = "HIPAA-governed Adobe RTCDP healthcare architecture case study — XDM schema, identity stitching, consent model. Portfolio project by Dr. Tatianna Gilliam.",
+    [string]$Description = "HIPAA-governed Adobe RTCDP healthcare architecture case study - XDM schema, identity stitching, consent model. Portfolio project by Dr. Tatianna Gilliam.",
     [ValidateSet("public", "private")]
     [string]$Visibility = "public"
 )
