@@ -1,0 +1,129 @@
+site_name: Adobe RTCDP Healthcare Architecture
+site_description: Enterprise Customer Intelligence & Activation Architecture for Healthcare
+site_author: Dr. Tatianna Gilliam, DBA
+site_url: https://tmgilliam.github.io/adobe-rtcdp-healthcare-architecture/
+
+repo_name: Tmgilliam/adobe-rtcdp-healthcare-architecture
+repo_url: https://github.com/Tmgilliam/adobe-rtcdp-healthcare-architecture
+
+copyright: Copyright &copy; 2024 Dr. Tatianna Gilliam
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mermaid2
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Tmgilliam
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/tatiannagilliam
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+
+nav:
+  - Home: index.md
+  - Architecture:
+    - Overview: architecture/index.md
+    - Source Systems: architecture/source-system-architecture.md
+    - XDM Schema Design: architecture/xdm-schema-design.md
+    - Identity Stitching: architecture/identity-stitching-flow.md
+    - Audience Design: architecture/audience-design.md
+    - Activation: architecture/activation-architecture.md
+    - Diagrams: architecture/diagrams/index.md
+  - Governance:
+    - Overview: governance/index.md
+    - Consent & HIPAA: governance/consent-hipaa-model.md
+    - Data Governance: governance/data-governance-framework.md
+    - Failure Modes: governance/failure-mode-analysis.md
+  - Business:
+    - Overview: business/index.md
+    - Stakeholder Map: business/business-problem-stakeholder-map.md
+    - KPI Framework: business/kpi-framework.md
+  - Deployment:
+    - Overview: deploy/index.md
+    - Infrastructure: deploy/infrastructure.md
+    - Kubernetes: deploy/kubernetes.md
+    - Runbooks: deploy/runbooks.md
+  - Design Decisions: design-decisions.md
+  - Portfolio:
+    - For Recruiters: portfolio/executive-summary-recruiter.md
+    - For Hiring Managers: portfolio/executive-summary-hiring-manager.md
+    - Interview Guide: portfolio/interview-talk-track.md
+    - Resume Bullets: portfolio/resume-bullets.md

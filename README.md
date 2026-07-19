@@ -6,6 +6,7 @@
 **Vertical:** Healthcare — HIPAA + consent governance + fragmented data unification across CRM, EMR, portal, call center, claims
 
 > **Public repo:** [github.com/Tmgilliam/adobe-rtcdp-healthcare-architecture](https://github.com/Tmgilliam/adobe-rtcdp-healthcare-architecture)  
+> **Documentation site:** [tmgilliam.github.io/adobe-rtcdp-healthcare-architecture](https://tmgilliam.github.io/adobe-rtcdp-healthcare-architecture)  
 > **MTP working copy** | Architecture case study demonstrating cross-platform customer data platform design for regulated healthcare environments.  
 > Connects ERP-era data integrity discipline (Sage 100, Scanco WMS) to modern XDM governance and identity unification.
 
@@ -36,6 +37,15 @@ The problem is not Adobe-specific. It is the same data unification problem Dr. G
 ```
 adobe-rtcdp-healthcare-architecture/
 ├── README.md                          ← You are here
+├── mkdocs.yml                         ← Documentation site configuration
+├── requirements.txt                   ← Python dependencies for docs
+│
+├── .github/
+│   └── workflows/
+│       ├── docs.yml                   ← Build & deploy docs to GitHub Pages
+│       ├── ci.yml                     ← Lint, validate, security scan
+│       └── release.yml                ← Release packaging
+│
 ├── architecture/
 │   ├── source-system-architecture.md  ← CRM, EMR, portal, call center, claims
 │   ├── xdm-schema-design.md           ← Profile + event schemas, field groups, namespaces
@@ -44,20 +54,97 @@ adobe-rtcdp-healthcare-architecture/
 │   ├── activation-architecture.md     ← Destinations, latency, fallback
 │   └── diagrams/
 │       └── placeholder.md             ← Mermaid/diagram index
+│
 ├── governance/
 │   ├── consent-hipaa-model.md         ← Privacy Rule, BAA, audit trail
 │   ├── failure-mode-analysis.md       ← Identity, consent, freshness, activation failures
 │   └── data-governance-framework.md   ← Labels, policies, stewardship
+│
 ├── business/
 │   ├── business-problem-stakeholder-map.md
 │   └── kpi-framework.md               ← Activation, engagement, data quality KPIs
-├── docs/
-│   └── design-decisions.md            ← Architecture Decision Records
-└── portfolio/
-    ├── executive-summary-recruiter.md
-    ├── executive-summary-hiring-manager.md
-    ├── interview-talk-track.md        ← 60s / 3min / deep dive
-    └── resume-bullets.md              ← 10 role-targeted bullets
+│
+├── docs/                              ← MkDocs content (symlinked to source)
+│   ├── index.md                       ← Documentation home page
+│   ├── design-decisions.md            ← Architecture Decision Records
+│   ├── architecture/                  ← Architecture docs
+│   ├── governance/                    ← Governance docs
+│   ├── business/                      ← Business docs
+│   ├── deploy/                        ← Deployment guides
+│   └── portfolio/                     ← Portfolio docs
+│
+├── deploy/
+│   ├── terraform/
+│   │   ├── main.tf                    ← Root Terraform module
+│   │   ├── variables.tf               ← Input variables
+│   │   ├── outputs.tf                 ← Output values
+│   │   ├── modules/
+│   │   │   ├── network/               ← VNet, subnets, NSGs
+│   │   │   ├── aks/                   ← Kubernetes cluster
+│   │   │   ├── storage/               ← Blob storage
+│   │   │   ├── eventhub/              ← Event streaming
+│   │   │   ├── keyvault/              ← Secrets management
+│   │   │   └── monitoring/            ← Log Analytics, alerts
+│   │   └── environments/
+│   │       ├── dev.tfvars
+│   │       ├── staging.tfvars
+│   │       └── prod.tfvars
+│   ├── kubernetes/
+│   │   ├── charts/
+│   │   │   └── ingestion/             ← Helm chart for ingestion service
+│   │   └── values/
+│   │       ├── dev.yaml
+│   │       ├── staging.yaml
+│   │       └── prod.yaml
+│   └── scripts/
+│       ├── deploy.sh                  ← Infrastructure deployment script
+│       └── deploy-k8s.sh              ← Kubernetes deployment script
+│
+├── portfolio/
+│   ├── executive-summary-recruiter.md
+│   ├── executive-summary-hiring-manager.md
+│   ├── interview-talk-track.md        ← 60s / 3min / deep dive
+│   └── resume-bullets.md              ← 10 role-targeted bullets
+│
+└── scripts/
+    └── publish-to-github.ps1          ← Legacy publishing script
+```
+
+---
+
+## Quick Start
+
+### View Documentation Locally
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Serve documentation locally
+mkdocs serve
+
+# Open http://127.0.0.1:8000 in browser
+```
+
+### Deploy Infrastructure (Azure)
+
+```bash
+# Navigate to terraform directory
+cd deploy/terraform
+
+# Initialize and plan
+terraform init
+terraform plan -var-file="environments/dev.tfvars"
+
+# Apply (with confirmation)
+terraform apply -var-file="environments/dev.tfvars"
+```
+
+### Deploy Kubernetes Workloads
+
+```bash
+# Deploy ingestion service
+./deploy/scripts/deploy-k8s.sh dev rtcdp ingestion
 ```
 
 ---
@@ -83,6 +170,16 @@ See [architecture/source-system-architecture.md](architecture/source-system-arch
 3. **Minimum necessary by design** — Data usage labels and field-level policies restrict PHI exposure in downstream destinations.
 4. **ERP-grade data integrity** — The same discipline applied to Sage 100 master data (one customer record, one truth) maps directly to profile unification and namespace governance.
 5. **Failure-aware design** — Identity conflicts, consent drift, and pipeline delays are modeled explicitly, not discovered in production.
+
+---
+
+## CI/CD Pipeline
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **CI** (`ci.yml`) | Push to `main`/`develop`, PRs | Markdown linting, link validation, Terraform validation, security scan |
+| **Docs** (`docs.yml`) | Push to `main`, changes to docs | Build and deploy documentation to GitHub Pages |
+| **Release** (`release.yml`) | Tag `v*` | Package artifacts, create GitHub release |
 
 ---
 
@@ -123,6 +220,7 @@ Microsoft Certified: AZ-305 (Azure Solutions Architect Expert) | AI-102 (Azure A
 - **Hiring manager:** [portfolio/executive-summary-hiring-manager.md](portfolio/executive-summary-hiring-manager.md) + architecture folder.
 - **Technical panel:** [architecture/xdm-schema-design.md](architecture/xdm-schema-design.md) + [governance/failure-mode-analysis.md](governance/failure-mode-analysis.md).
 - **GRC / compliance interview:** [governance/consent-hipaa-model.md](governance/consent-hipaa-model.md) + [governance/data-governance-framework.md](governance/data-governance-framework.md).
+- **DevOps / Platform:** [deploy/](deploy/) folder for Terraform and Kubernetes artifacts.
 
 ---
 
