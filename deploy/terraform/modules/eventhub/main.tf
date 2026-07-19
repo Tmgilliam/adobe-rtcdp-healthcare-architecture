@@ -13,7 +13,7 @@ resource "azurerm_eventhub_namespace" "main" {
     trusted_service_access_enabled = true
 
     dynamic "virtual_network_rule" {
-      for_each = var.allowed_subnet_ids
+      for_each = toset(var.allowed_subnet_ids)
       content {
         subnet_id = virtual_network_rule.value
       }

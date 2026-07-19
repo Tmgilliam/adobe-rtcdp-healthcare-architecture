@@ -63,15 +63,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "pools" {
   os_disk_size_gb       = 128
 
   node_labels = each.value.labels
-
-  dynamic "node_taints" {
-    for_each = each.value.taints
-    content {
-      key    = split("=", split(":", node_taints.value)[0])[0]
-      value  = split("=", split(":", node_taints.value)[0])[1]
-      effect = split(":", node_taints.value)[1]
-    }
-  }
+  node_taints = each.value.taints
 
   tags = var.tags
 }
