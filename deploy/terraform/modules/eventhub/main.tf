@@ -8,19 +8,24 @@ resource "azurerm_eventhub_namespace" "main" {
   auto_inflate_enabled     = var.sku == "Standard" ? true : false
   maximum_throughput_units = var.sku == "Standard" ? 10 : null
 
-  network_rulesets {
-    default_action                 = "Deny"
-    trusted_service_access_enabled = true
-
-    dynamic "virtual_network_rule" {
-      for_each = toset(var.allowed_subnet_ids)
-      content {
-        subnet_id = virtual_network_rule.value
-      }
-    }
-  }
+  public_network_access_enabled = length(var.allowed_subnet_ids) > 0 ? false : true
 
   tags = var.tags
+}
+
+resource "azurerm_eventhub_namespace_network_rule_set" "main" {
+  count = length(var.allowed_subnet_ids) > 0 ? 1 : 0
+
+  namespace_id                  = azurerm_eventhub_namespace.main.id
+  default_action                = "Deny"
+  trusted_service_access_enabled = true
+
+  dynamic "virtual_network_rule" {
+    for_each = toset(var.allowed_subnet_ids)
+    content {
+      subnet_id = virtual_network_rule.value
+    }
+  }
 }
 
 resource "azurerm_eventhub" "hubs" {
