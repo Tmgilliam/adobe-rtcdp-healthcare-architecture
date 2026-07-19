@@ -84,5 +84,5 @@ In Sage 100 operations, the stakeholder map for WMS implementation looked the sa
 ## Related Documents
 
 - [KPI Framework](kpi-framework.md)
-- [Design Decisions](../docs/design-decisions.md)
+- [Design Decisions](../design-decisions.md)
 - [Executive Summary — Hiring Manager](../portfolio/executive-summary-hiring-manager.md)

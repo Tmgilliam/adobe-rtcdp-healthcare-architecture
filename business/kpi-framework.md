@@ -163,4 +163,4 @@ In Sage 100 operations, leadership tracked **inventory accuracy (98%)**, **fill 
 - [Business Problem & Stakeholder Map](business-problem-stakeholder-map.md)
 - [Failure Mode Analysis](../governance/failure-mode-analysis.md)
 - [Activation Architecture](../architecture/activation-architecture.md)
-- [Design Decisions](../docs/design-decisions.md)
+- [Design Decisions](../design-decisions.md)
