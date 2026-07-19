@@ -16,8 +16,8 @@ resource "azurerm_eventhub_namespace" "main" {
 resource "azurerm_eventhub_namespace_network_rule_set" "main" {
   count = length(var.allowed_subnet_ids) > 0 ? 1 : 0
 
-  namespace_id                  = azurerm_eventhub_namespace.main.id
-  default_action                = "Deny"
+  namespace_id                   = azurerm_eventhub_namespace.main.id
+  default_action                 = "Deny"
   trusted_service_access_enabled = true
 
   dynamic "virtual_network_rule" {
