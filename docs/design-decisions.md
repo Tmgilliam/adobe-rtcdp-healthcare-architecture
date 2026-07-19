@@ -97,6 +97,6 @@
 
 ## Related Documents
 
-- [XDM Schema Design](../architecture/xdm-schema-design.md)
-- [Consent & HIPAA Model](../governance/consent-hipaa-model.md)
-- [Failure Mode Analysis](../governance/failure-mode-analysis.md)
+- [XDM Schema Design](architecture/xdm-schema-design.md)
+- [Consent & HIPAA Model](governance/consent-hipaa-model.md)
+- [Failure Mode Analysis](governance/failure-mode-analysis.md)

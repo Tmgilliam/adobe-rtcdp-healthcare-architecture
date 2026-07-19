@@ -1,0 +1,33 @@
+global:
+  environment: staging
+
+ingestion:
+  replicaCount: 2
+
+  image:
+    repository: rtcdp/ingestion
+    tag: "v1.2.0"
+    pullPolicy: Always
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+
+  config:
+    batchSize: 500
+    flushIntervalSeconds: 30
+    retryAttempts: 3
+    logLevel: info
+
+  nodeSelector:
+    workload: ingestion

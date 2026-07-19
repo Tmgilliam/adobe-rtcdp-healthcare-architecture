@@ -1,0 +1,60 @@
+# MkDocs
+site/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+crash.log
+crash.*.log
+
+# Kubernetes
+*.kubeconfig
+kubeconfig
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets (never commit these)
+.env
+.env.*
+*.pem
+*.key
+secrets/
+credentials/
+
+# Node (for markdownlint)
+node_modules/
+
+# Logs
+*.log
+logs/

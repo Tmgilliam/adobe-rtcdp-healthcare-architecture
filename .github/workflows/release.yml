@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build documentation
+        run: mkdocs build
+
+      - name: Package documentation site
+        run: |
+          cd site
+          zip -r ../docs-site-${{ github.ref_name }}.zip .
+
+      - name: Package architecture artifacts
+        run: |
+          zip -r architecture-artifacts-${{ github.ref_name }}.zip \
+            architecture/ \
+            governance/ \
+            business/ \
+            deploy/ \
+            -x "*.git*"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          echo "## What's Changed" > CHANGELOG_RELEASE.md
+          echo "" >> CHANGELOG_RELEASE.md
+          git log $(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --pretty=format:"- %s (%h)" >> CHANGELOG_RELEASE.md || echo "- Initial release" >> CHANGELOG_RELEASE.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: CHANGELOG_RELEASE.md
+          files: |
+            docs-site-${{ github.ref_name }}.zip
+            architecture-artifacts-${{ github.ref_name }}.zip
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') }}

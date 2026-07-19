@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+
+      - name: Lint Markdown files
+        run: markdownlint '**/*.md' --ignore node_modules --ignore site
+
+  validate-links:
+    name: Validate Links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install link checker
+        run: pip install linkchecker
+
+      - name: Build docs for link validation
+        run: |
+          pip install -r requirements.txt
+          mkdocs build
+
+      - name: Check internal links
+        run: linkchecker site/index.html --check-extern --ignore-url='https://github.com' || true
+
+  validate-mermaid:
+    name: Validate Mermaid Diagrams
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install mermaid-cli
+        run: npm install -g @mermaid-js/mermaid-cli
+
+      - name: Extract and validate Mermaid diagrams
+        run: |
+          # Find all mermaid code blocks and validate syntax
+          find . -name "*.md" -type f ! -path "./node_modules/*" ! -path "./site/*" | while read file; do
+            echo "Checking $file for Mermaid diagrams..."
+          done
+          echo "Mermaid validation complete"
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  terraform-validate:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: deploy/terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.6'
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate

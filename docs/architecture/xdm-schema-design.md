@@ -1,0 +1,1 @@
+../../architecture/xdm-schema-design.md

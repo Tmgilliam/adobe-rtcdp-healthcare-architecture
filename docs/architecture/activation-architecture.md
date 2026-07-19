@@ -1,0 +1,1 @@
+../../architecture/activation-architecture.md

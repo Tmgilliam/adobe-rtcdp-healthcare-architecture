@@ -1,0 +1,51 @@
+global:
+  environment: production
+  imageRegistry: rtcdpacr.azurecr.io
+  imagePullSecrets:
+    - name: acr-secret
+
+ingestion:
+  replicaCount: 3
+
+  image:
+    repository: rtcdpacr.azurecr.io/rtcdp/ingestion
+    tag: "v1.2.0"
+    pullPolicy: Always
+
+  serviceAccount:
+    create: true
+    annotations:
+      azure.workload.identity/client-id: "${AZURE_CLIENT_ID}"
+    name: "ingestion-sa"
+
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+  config:
+    batchSize: 1000
+    flushIntervalSeconds: 30
+    retryAttempts: 5
+    logLevel: info
+
+  nodeSelector:
+    workload: ingestion
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: ingestion
+          topologyKey: topology.kubernetes.io/zone
